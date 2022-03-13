@@ -21,3 +21,15 @@ do
 done
 
 echo "All locks deleted"
+
+
+webapps=$(az webapp list --resource-group $RESOURCE_GROUP --query "[].name" --output tsv)
+
+for web in $webapps
+do
+    echo "Removing vnet integration for $web"
+    az webapp vnet-integration remove --resource-group $RESOURCE_GROUP --name $web
+    echo "Vnet integration removed for $web"
+done
+
+echo "All vnet integrations removed."
