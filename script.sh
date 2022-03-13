@@ -4,10 +4,14 @@
 
 # Logic:
 # - Remove deletion locks
-# - Remove vnet integration from App Services
-# - Delete App Services
+# - Remove vnet integration from App Services and Function Apps
+# - Delete App Services and Function Apps
+# - Delete App Service Plans (implicitly, when App Services and Function Apps are deleted)
 
 RESOURCE_GROUP="$1"
+
+GREEN="\033[32m"
+NOCOLOR="\033[0m"
 
 # locks=$(az lock list --resource-group $RESOURCE_GROUP --query "[].[id,name]" --output tsv)
 locks=$(az lock list --resource-group $RESOURCE_GROUP --query "[].id" --output tsv)
@@ -39,3 +43,23 @@ do
     echo "Vnet integration removed for $fun"
 done
 echo "All vnet integrations removed for Function Apps."
+
+
+for web in $webapps
+do
+    echo "Deleting App Service $web"
+    az webapp delete --resource-group $RESOURCE_GROUP --name $web
+    echo "App Service deleted $web"
+done
+echo "All App Services deleted."
+
+
+for fun in $functionapps
+do
+    echo "Deleting Function App $fun"
+    az functionapp delete --resource-group $RESOURCE_GROUP --name $fun
+    echo "Function App deleted $fun"
+done
+echo "All Function Apps deleted."
+
+echo -e "${GREEN}All done${NOCOLOR}"
