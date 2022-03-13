@@ -9,6 +9,11 @@
 # - Delete App Service Plans (implicitly, when App Services and Function Apps are deleted)
 
 RESOURCE_GROUP="$1"
+if [ -z "$RESOURCE_GROUP" ]; then
+    echo "Please provide resource group name as parameter"
+    echo "Usage: ./script.sh resource_group_name"
+    exit 1
+fi
 
 GREEN="\033[32m"
 NOCOLOR="\033[0m"
