@@ -18,6 +18,15 @@ fi
 GREEN="\033[32m"
 NOCOLOR="\033[0m"
 
+# To avoid executing in a wrong subscription, ask user to confirm
+echo "Currently selected subscription is:"
+az account show
+
+read -p "Do you want to remove resources in this subscription? ('yes' to continue): " confirmation # -p is prompt in the same line
+if [[ "$confirmation" != "yes" ]]; then
+    exit 2
+fi
+
 # locks=$(az lock list --resource-group $RESOURCE_GROUP --query "[].[id,name]" --output tsv)
 locks=$(az lock list --resource-group $RESOURCE_GROUP --query "[].id" --output tsv)
 for id in $locks
